@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package app;
+
+// The File service definition.
+service FileService {
+  // Uploads a file
+  rpc uploadFile (UploadRequest) returns (UploadResponse) {}
+}
+
+// The request message containing the file's byte data.
+message UploadRequest {
+  string file = 1;
+  string filename = 2;
+}
+
+// The response message containing the upload status.
+message UploadResponse {
+  string message = 1;
+}
