@@ -1,20 +1,193 @@
 syntax = "proto3";
 
-package app;
+package bitget;
 
-// The File service definition.
-service FileService {
-  // Uploads a file
-  rpc uploadFile (UploadRequest) returns (UploadResponse) {}
+// Trading service for handling trading operations
+service TradingService {
+  rpc PlaceOrder(PlaceOrderRequest) returns (OrderResponse);
+  rpc BatchOrder(BatchOrderRequest) returns (BatchOrderResponse);
+  rpc CancelOrder(CancelOrderRequest) returns (OrderResponse);
+  rpc GetOrderDetails(OrderDetailsRequest) returns (OrderDetailsResponse);
+  rpc GetOrderList(OrderListRequest) returns (OrderListResponse);
+  rpc GetOrderHistory(OrderHistoryRequest) returns (OrderHistoryResponse);
+  rpc GetTransactionDetails(TransactionDetailsRequest) returns (TransactionDetailsResponse);
 }
 
-// The request message containing the file's byte data.
-message UploadRequest {
-  string file = 1;
-  string filename = 2;
+message PlaceOrderRequest {
+  string symbol = 1;
+  string side = 2;
+  string orderType = 3;
+  string force = 4;
+  string price = 5;
+  string quantity = 6;
+  string clientOrderId = 7;
 }
 
-// The response message containing the upload status.
-message UploadResponse {
-  string message = 1;
+message OrderResponse {
+  string orderId = 1;
+  string clientOrderId = 2;
+}
+
+message BatchOrderRequest {
+  string symbol = 1;
+  repeated OrderData orderList = 2;
+}
+
+message OrderData {
+  string side = 1;
+  string orderType = 2;
+  string force = 3;
+  string price = 4;
+  string quantity = 5;
+  string clientOrderId = 6;
+}
+
+message BatchOrderResponse {
+  repeated OrderResult resultList = 1;
+  repeated OrderFailure failure = 2;
+}
+
+message OrderResult {
+  string orderId = 1;
+  string clientOrderId = 2;
+}
+
+message OrderFailure {
+  string orderId = 1;
+  string clientOrderId = 2;
+  string errorMsg = 3;
+}
+
+message CancelOrderRequest {
+  string symbol = 1;
+  string orderId = 2;
+  string clientOid = 3;
+}
+
+message OrderDetailsRequest {
+  string symbol = 1;
+  string orderId = 2;
+  string clientOrderId = 3;
+}
+
+message OrderDetailsResponse {
+  repeated OrderInfo data = 1;
+}
+
+message OrderInfo {
+  string accountId = 1;
+  string symbol = 2;
+  string orderId = 3;
+  string clientOrderId = 4;
+  string price = 5;
+  string quantity = 6;
+  string orderType = 7;
+  string side = 8;
+  string status = 9;
+  string fillPrice = 10;
+  string fillQuantity = 11;
+  string fillTotalAmount = 12;
+  string enterPointSource = 13;
+  string feeDetail = 14;
+  string orderSource = 15;
+  string cTime = 16;
+}
+
+message OrderListRequest {
+  string symbol = 1;
+}
+
+message OrderListResponse {
+  repeated OrderInfo data = 1;
+}
+
+message OrderHistoryRequest {
+  string symbol = 1;
+  string after = 2;
+  string before = 3;
+  int32 limit = 4;
+}
+
+message OrderHistoryResponse {
+  repeated OrderInfo data = 1;
+}
+
+message TransactionDetailsRequest {
+  string symbol = 1;
+  string orderId = 2;
+  string after = 3;
+  string before = 4;
+  int32 limit = 5;
+}
+
+message TransactionDetailsResponse {
+  repeated TransactionInfo data = 1;
+}
+
+message TransactionInfo {
+  string accountId = 1;
+  string symbol = 2;
+  string orderId = 3;
+  string fillId = 4;
+  string orderType = 5;
+  string side = 6;
+  string fillPrice = 7;
+  string fillQuantity = 8;
+  string fillTotalAmount = 9;
+  string cTime = 10;
+  string feeCcy = 11;
+  string fees = 12;
+}
+
+// Account service for handling account-related operations
+service AccountService {
+  rpc GetApiKeyInfo(ApiKeyInfoRequest) returns (ApiKeyInfoResponse);
+  rpc GetAccountAssets(AccountAssetsRequest) returns (AccountAssetsResponse);
+  rpc GetTransferList(TransferListRequest) returns (TransferListResponse);
+}
+
+message ApiKeyInfoRequest {
+  // No parameters required
+}
+
+message ApiKeyInfoResponse {
+  string userId = 1;
+  string inviterId = 2;
+  string ips = 3;
+  repeated string authorities = 4;
+  string parentId = 5;
+  bool trader = 6;
+  bool isSpotTrader = 7;
+}
+
+message AccountAssetsRequest {
+  string coin = 1;
+}
+
+message AccountAssetsResponse {
+  repeated AssetInfo data = 1;
+}
+
+message AssetInfo {
+  string coinId = 1;
+  string coinName = 2;
+  string available = 3;
+  string frozen = 4;
+  string lock = 5;
+  string uTime = 6;
+}
+
+message TransferListRequest {
+  string symbol = 1;
+  string after = 2;
+  string before = 3;
+  int32 limit = 4;
+}
+
+message TransferListResponse {
+  repeated TransferInfo data = 1;
+}
+
+message TransferInfo {
+  // Fields as per the API specification
 }
